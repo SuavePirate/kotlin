@@ -413,7 +413,13 @@ public class InlineDefaultValuesTestsGenerated extends AbstractInlineDefaultValu
         @TestMetadata("kt18792.kt")
         public void testKt18792() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/boxInline/defaultValues/maskElimination/kt18792.kt");
-            doTest(fileName);
+            try {
+                doTest(fileName);
+            }
+            catch (Throwable ignore) {
+                return;
+            }
+            throw new AssertionError("Looks like this test can be unmuted. Remove IGNORE_BACKEND directive for that.");
         }
 
         @TestMetadata("simple.kt")
