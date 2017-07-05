@@ -11,5 +11,7 @@
     <orderEntry type="module" module-name="frontend" />
     <orderEntry type="module" module-name="util" />
     <orderEntry type="library" name="kotlin-reflect" level="project" />
+    <orderEntry type="library" name="kotlinx-coroutines-core" level="project" />
+    <orderEntry type="library" name="kotlinx-coroutines-jdk8" level="project" />
   </component>
 </module>

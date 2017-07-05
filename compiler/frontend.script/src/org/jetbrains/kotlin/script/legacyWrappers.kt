@@ -18,7 +18,10 @@
 
 package org.jetbrains.kotlin.script
 
+import kotlinx.coroutines.experimental.asCoroutineDispatcher
+import kotlinx.coroutines.experimental.run
 import java.io.File
+import java.util.concurrent.Executors
 import kotlin.script.dependencies.DependenciesResolver
 import kotlin.script.dependencies.Environment
 import kotlin.script.dependencies.ScriptDependencies
@@ -62,8 +65,21 @@ internal class LegacyPackageDependencyResolverWrapper(val legacyResolver: Script
     private fun ScriptContents.Position.convertPosition(): ScriptReport.Position = ScriptReport.Position(line, col)
 }
 
+private val legacyPool by lazy {
+    Executors.newFixedThreadPool(maxOf(Runtime.getRuntime ().availableProcessors() / 2, 1)).asCoroutineDispatcher()
+}
+
 internal class ApiChangeDependencyResolverWrapper(val legacyResolver: kotlin.script.dependencies.ScriptDependenciesResolver)
-    : kotlin.script.dependencies.DependenciesResolver {
+    : kotlin.script.dependencies.experimental.AsyncDependenciesResolver {
+
+    suspend override fun resolveAsync(
+            scriptContents: kotlin.script.dependencies.ScriptContents,
+            environment: Environment
+    ): DependenciesResolver.ResolveResult {
+        return run(legacyPool) {
+            resolve(scriptContents, environment)
+        }
+    }
 
     override fun resolve(
             scriptContents: kotlin.script.dependencies.ScriptContents,
