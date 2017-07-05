@@ -65,7 +65,7 @@ open class KotlinScriptDefinitionFromAnnotatedTemplate(
 
         log.warn("[kts] Deprecated annotations on the script template are used, please update the provider")
 
-        return instantiateResover(legacyDefAnn.resolver)?.let(::LegacyPackageDependencyResolverWrapper)
+        return instantiateResolver(legacyDefAnn.resolver)?.let(::LegacyPackageDependencyResolverWrapper)
     }
 
     private fun resolverFromAnnotation(template: KClass<out Any>): DependenciesResolver? {
@@ -73,11 +73,11 @@ open class KotlinScriptDefinitionFromAnnotatedTemplate(
             template.annotations.firstIsInstanceOrNull<kotlin.script.templates.ScriptTemplateDefinition>()
         } ?: return null
 
-        val resolver = instantiateResover(defAnn.resolver)
+        val resolver = instantiateResolver(defAnn.resolver)
         return if (resolver is DependenciesResolver) resolver else resolver?.let(::ApiChangeDependencyResolverWrapper)
     }
 
-    private fun <T : Any> instantiateResover(resolverClass: KClass<T>): T? {
+    private fun <T : Any> instantiateResolver(resolverClass: KClass<T>): T? {
         // TODO: logScriptDefMessage missing or invalid constructor
         return try {
             resolverClass.primaryConstructor?.call().also {
