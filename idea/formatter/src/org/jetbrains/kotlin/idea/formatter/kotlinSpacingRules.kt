@@ -59,6 +59,26 @@ fun createSpacingBuilder(settings: CodeStyleSettings, builderUtil: KotlinSpacing
                 TokenSet.create(PROPERTY, FUN, CLASS, OBJECT_DECLARATION, ENUM_ENTRY, SECONDARY_CONSTRUCTOR, CLASS_INITIALIZER)
 
         custom {
+            inPosition(parent = null, left = EOL_COMMENT, right = EOL_COMMENT).customRule { _, _, right ->
+                val nodeBeforeRight = right.node.treePrev
+                if (nodeBeforeRight is PsiWhiteSpace && !nodeBeforeRight.textContains('\n')) {
+                    // Several line comments happened to be generated in one line
+                    createSpacing(0, minLineFeeds = 1)
+                }
+                else {
+                    null
+                }
+            }
+
+            inPosition(rightSet = TokenSet.create(EOL_COMMENT, BLOCK_COMMENT)).spacing(
+                    if (commonCodeStyleSettings.KEEP_FIRST_COLUMN_COMMENT) {
+                        Spacing.createKeepingFirstColumnSpacing(0, Integer.MAX_VALUE, settings.KEEP_LINE_BREAKS, commonCodeStyleSettings.KEEP_BLANK_LINES_IN_CODE)
+                    }
+                    else {
+                        Spacing.createSpacing(0, Integer.MAX_VALUE, 0, settings.KEEP_LINE_BREAKS, commonCodeStyleSettings.KEEP_BLANK_LINES_IN_CODE)
+                    }
+            )
+
             inPosition(left = CLASS, right = CLASS).emptyLinesIfLineBreakInLeft(1)
             inPosition(left = CLASS, right = OBJECT_DECLARATION).emptyLinesIfLineBreakInLeft(1)
             inPosition(left = OBJECT_DECLARATION, right = OBJECT_DECLARATION).emptyLinesIfLineBreakInLeft(1)
@@ -78,7 +98,8 @@ fun createSpacingBuilder(settings: CodeStyleSettings, builderUtil: KotlinSpacing
                 val klass = parent.node.treeParent.psi as? KtClass ?: return@customRule null
                 if (klass.isEnum() && right.node.elementType in DECLARATIONS) {
                     createSpacing(0, minLineFeeds = 2, keepBlankLines = settings.KEEP_BLANK_LINES_IN_DECLARATIONS)
-                } else null
+                }
+                else null
             }
 
             val parameterWithDocCommentRule = {
@@ -326,22 +347,6 @@ fun createSpacingBuilder(settings: CodeStyleSettings, builderUtil: KotlinSpacing
             val leftBraceRuleIfBlockIsWrapped = {
                 _: ASTBlock, _: ASTBlock, right: ASTBlock ->
                 spacingForLeftBrace(right.node!!.firstChildNode)
-            }
-
-            if (kotlinCommonSettings.KEEP_FIRST_COLUMN_COMMENT) {
-                inPosition(parent = null, left = EOL_COMMENT, right = EOL_COMMENT).customRule { _, _, right ->
-                    val nodeBeforeRight = right.node.treePrev
-                    if (nodeBeforeRight is PsiWhiteSpace && !nodeBeforeRight.textContains('\n')) {
-                        // Several line comments happened to be generated in one line
-                        createSpacing(0, minLineFeeds = 1)
-                    }
-                    else {
-                        null
-                    }
-                }
-
-                inPosition(rightSet = TokenSet.create(EOL_COMMENT, BLOCK_COMMENT)).spacing(
-                        Spacing.createKeepingFirstColumnSpacing(0, Integer.MAX_VALUE, settings.KEEP_LINE_BREAKS, kotlinCommonSettings.KEEP_BLANK_LINES_IN_CODE))
             }
 
             // Add space after a semicolon if there is another child at the same line
