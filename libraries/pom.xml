@@ -217,7 +217,7 @@
                         <configuration>
                             <artifacts>
                                 <artifact>
-                                    <file>${highest-basedir}/lib/empty-javadoc.jar</file>
+                                    <file>C:/Dev/kotlin/libraries/lib/empty-javadoc.jar</file>
                                     <type>jar</type>
                                     <classifier>javadoc</classifier>
                                 </artifact>
@@ -232,16 +232,6 @@
                 <artifactId>directory-maven-plugin</artifactId>
                 <version>0.1</version>
                 <executions>
-                    <execution>
-                        <id>directories</id>
-                        <goals>
-                            <goal>highest-basedir</goal>
-                        </goals>
-                        <phase>initialize</phase>
-                        <configuration>
-                            <property>highest-basedir</property>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
 
@@ -269,7 +259,7 @@
                         <configuration>
                             <passphrase>${kotlin.key.passphrase}</passphrase>
                             <keyname>${kotlin.key.name}</keyname>
-                            <homedir>${highest-basedir}/.gnupg</homedir>
+                            <homedir>C:/Dev/kotlin/.gnupg</homedir>
                         </configuration>
                         <executions>
                             <execution>

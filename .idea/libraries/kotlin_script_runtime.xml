@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="kotlin-script-runtime">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/dependencies/bootstrap-compiler/Kotlin/lib/kotlin-script-runtime.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libraries/tools/script-runtime/build/libs/kotlin-script-runtime-1.1-SNAPSHOT.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

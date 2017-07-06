@@ -3,7 +3,7 @@
     <property file="resources/kotlinManifest.properties"/>
 
     <!-- Set to false to disable proguard run on kotlin-compiler.jar. Speeds up the build -->
-    <property name="shrink" value="true"/>
+    <property name="shrink" value="false"/>
 
     <property name="max.heap.size.for.forked.jvm" value="1024m"/>
 
@@ -11,7 +11,7 @@
     <property name="bootstrap.compiler.home" value="${bootstrap.home}/Kotlin/kotlinc"/>
     <property name="bootstrap.runtime" value="${bootstrap.compiler.home}/lib/kotlin-stdlib.jar"/>
     <property name="bootstrap.reflect" value="${bootstrap.compiler.home}/lib/kotlin-reflect.jar"/>
-    <property name="bootstrap.script.runtime" value="${bootstrap.compiler.home}/lib/kotlin-script-runtime.jar"/>
+    <property name="bootstrap.script.runtime" value="C:\Dev\kotlin\libraries\tools\script-runtime\build\libs\kotlin-script-runtime-1.1-SNAPSHOT.jar"/>
     <property name="bootstrap.kotlin.test" value="${bootstrap.compiler.home}/lib/kotlin-test.jar" />
 
     <property name="kotlin-home" value="${output}/kotlinc"/>
@@ -65,6 +65,8 @@
         <fileset dir="${dependencies}" includes="jline.jar"/>
         <fileset dir="${dependencies}" includes="javaslang-2.0.6.jar"/>
         <fileset dir="${dependencies}" includes="json-org.jar"/>
+        <fileset dir="${dependencies}" includes="kotlinx-coroutines-core.jar"/>
+        <fileset dir="${dependencies}" includes="kotlinx-coroutines-jdk8.jar"/>
         <fileset dir="${basedir}/ideaSDK/jps" includes="jps-model.jar"/>
     </path>
 
@@ -443,6 +445,7 @@
               timeout="4000000"
               taskname="ant-fork">
             <jvmarg line="${jvmargs}" />
+            <jvmarg line="-Xmx3000m"/>
             <classpath>
                 <pathelement location="${ant.home}/lib/ant-launcher.jar"/>
             </classpath>
@@ -520,7 +523,7 @@
                 <zipfileset src="${bootstrap.reflect}">
                     <patternset refid="lib.metainf.patternset"/>
                 </zipfileset>
-                <zipfileset src="C:\Dev\kt\kotlin\libraries\tools\script-runtime\build\libs\kotlin-script-runtime-1.1-SNAPSHOT.jar">
+                <zipfileset src="${bootstrap.script.runtime}">
                     <patternset refid="lib.metainf.patternset"/>
                 </zipfileset>
 
